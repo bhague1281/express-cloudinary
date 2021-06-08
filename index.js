@@ -15,7 +15,11 @@ app.get('/', function(req, res) {
 
 app.post('/', upload.single('myFile'), (req, res) => {
   cloudinary.uploader.upload(req.file.path, (result) => {
-    res.send(result)
+    var imageId = `${result.public_id}.jpg`
+    var src = cloudinary.image(imageId, {effect: "grayscale", width: 164, x: 0, y: 0, crop: "fill"})
+    // var src = cloudinary.image("", {effect: 'greyscale'})
+
+    res.render('image', { imgSrc: src })
   })
 })
 
