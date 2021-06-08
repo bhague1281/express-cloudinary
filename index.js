@@ -14,7 +14,9 @@ app.get('/', function(req, res) {
 });
 
 app.post('/', upload.single('myFile'), (req, res) => {
-  res.send(req.file)
+  cloudinary.uploader.upload(req.file.path, (result) => {
+    res.send(result)
+  })
 })
 
 app.listen(3000);
