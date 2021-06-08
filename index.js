@@ -1,12 +1,31 @@
-var express = require('express');
-var ejsLayouts = require('express-ejs-layouts');
-var app = express();
+require('dotenv').config()
 
-app.set('view engine', 'ejs');
-app.use(ejsLayouts);
+let express = require('express')
+let ejsLayouts = require('express-ejs-layouts')
+let app = express()
+let multer = require('multer')
+let upload = multer({ dest: './uploads/' })
+let cloudinary = require('cloudinary')
 
-app.get('/', function(req, res) {
-  res.render('index');
-});
+app.set('view engine', 'ejs')
+app.use(ejsLayouts)
 
-app.listen(3000);
+app.get('/', function (req, res) {
+  res.render('index.ejs')
+})
+
+app.post('/', upload.single('myFile'), (req, res) => {
+  cloudinary.uploader.upload(req.file.path, (result) => {
+    var imageId = `${result.public_id}.jpg`
+    // res.send(result)
+    let src = cloudinary.image('x6ebsjdkdjfx6qzolopp.jpg', {
+      transformation: [
+        { effect: 'oil_paint:30', radius: 16, width: 310, x: 0, crop: 'crop' },
+        { angle: 0 },
+      ],
+    })
+    res.render('image.ejs', { imgSrc: src })
+  })
+})
+
+app.listen(5000)
