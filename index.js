@@ -1,12 +1,21 @@
-var express = require('express');
-var ejsLayouts = require('express-ejs-layouts');
-var app = express();
+require('dotenv').config()
 
-app.set('view engine', 'ejs');
-app.use(ejsLayouts);
+let express = require('express')
+let ejsLayouts = require('express-ejs-layouts')
+let app = express()
+let multer = require('multer')
+let upload = multer({ dest: './uploads/' })
+let cloudinary = require('cloudinary')
 
-app.get('/', function(req, res) {
-  res.render('index');
-});
+app.set('view engine', 'ejs')
+app.use(ejsLayouts)
 
-app.listen(3000);
+app.get('/', function (req, res) {
+  res.render('index')
+})
+
+app.post('/', upload.single('myFile'), (req, res) => {
+  res.send(req.file)
+})
+
+app.listen(5000)
